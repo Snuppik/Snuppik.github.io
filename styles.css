@@ -115,7 +115,7 @@ main {
 }
 
 .btn-main:hover {
-  background-color: #93887f;
+  background-color: #00008b;
   color: #111;
 }
 
@@ -320,4 +320,5 @@ main {
     margin-top: 1.2rem;
   }
 }
+
 
