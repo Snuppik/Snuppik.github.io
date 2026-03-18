@@ -106,7 +106,7 @@ main {
 }
 
 .btn-main {
-  background-color: #C0C0C0;
+  background-color: #a49b93;
   color: #222;
   border-radius: 999px;
   padding: 0.9rem 2.5rem;
@@ -115,7 +115,7 @@ main {
 }
 
 .btn-main:hover {
-  background-color: #C0C0C0;
+  background-color: #93887f;
   color: #111;
 }
 
@@ -320,7 +320,4 @@ main {
     margin-top: 1.2rem;
   }
 }
-
-
-
 
