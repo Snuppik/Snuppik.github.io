@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Скопируйте этот файл в config.local.php и укажите доступ к PostgreSQL.
+ * Файл config.local.php не обязателен, если заданы переменные окружения COOKBOOK_DB_*.
+ *
+ * @return array{host?: string, port?: string, dbname?: string, user?: string, password?: string}
+ */
+return [
+    'host' => '127.0.0.1',
+    'port' => '5432',
+    'dbname' => 'cookbook',
+    'user' => 'postgres',
+    'password' => '',
+];

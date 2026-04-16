@@ -1,9 +1,33 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/script.php';
+
+/** @var list<array<string, mixed>> $recipes */
+$recipes = [];
+$dbError = null;
+
+try {
+    $pdo = cookbook_connect_pdo();
+    $recipes = cookbook_fetch_recipe_submissions($pdo);
+} catch (Throwable $e) {
+    $dbError = 'Не удалось загрузить рецепты. Проверьте настройки подключения к базе данных.';
+}
+
+/**
+ * @param mixed $value
+ */
+function h($value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+?>
 <!DOCTYPE html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Кулинарная книга – Главная</title>
+    <title>Кулинарная книга – Рецепты</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -11,7 +35,6 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="css/styles.css" />
-    <!-- Замените favicon.ico на свой файл и положите рядом с HTML -->
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body>
@@ -21,7 +44,6 @@
         <nav class="navbar navbar-expand-lg navbar-custom">
           <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
-              <!-- Логотип: замените содержимое на свою картинку -->
               <img
                 src="images/logo.png"
                 alt="Логотип"
@@ -43,12 +65,12 @@
             <div class="collapse navbar-collapse" id="mainNavbar">
               <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="index.html"
-                    >Главная</a
-                  >
+                  <a class="nav-link" href="index.html">Главная</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="list.php">Рецепты</a>
+                  <a class="nav-link active" aria-current="page" href="list.php"
+                    >Рецепты</a
+                  >
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="form.html">Контакты</a>
@@ -65,25 +87,65 @@
       </header>
 
       <!-- Контент -->
-      <main>
-        <section class="hero-section">
-          <div class="container">
-            <div class="hero-card mx-auto col-lg-8">
-              <h1 class="hero-title">Вкусные рецепты каждый день</h1>
-              <p class="hero-subtitle">
-                Готовьте как шеф-повар у себя дома
-              </p>
-              <div class="hero-buttons d-flex flex-column align-items-center gap-2">
-                <a href="list.php" class="btn btn-main">
-                  Смотреть рецепты
-                </a>
-                <a href="form_recipe.html" class="btn btn-main">
-                  Добавить рецепт
+      <main class="py-4">
+        <div class="container">
+          <h2 class="section-title text-center mb-4">Рецепты</h2>
+
+          <div class="row justify-content-center mb-4" id="recipeSearch">
+            <div class="col-md-6">
+              <input type="search" id="searchInput" class="form-control" placeholder="Поиск по названию или описанию..." autocomplete="off">
+            </div>
+          </div>
+
+          <?php if ($dbError !== null) : ?>
+            <div class="alert alert-warning text-center" role="alert">
+              <?php echo h($dbError); ?>
+            </div>
+          <?php elseif (count($recipes) === 0) : ?>
+            <p class="text-center text-muted">Пока нет ни одного рецепта в базе данных.</p>
+          <?php else : ?>
+            <?php foreach ($recipes as $item) :
+                $imgName = (string) ($item['image_path'] ?? '');
+                if ($imgName !== '') {
+                    $imgSrc = (strpos($imgName, '/') !== false || strpos($imgName, '\\') !== false)
+                        ? $imgName
+                        : 'images/' . $imgName;
+                } else {
+                    $imgSrc = 'images/logo.png';
+                }
+                $title = (string) ($item['title'] ?? '');
+                $description = (string) ($item['short_description'] ?? '');
+                if ($description === '') {
+                    $description = 'Описание не указано.';
+                }
+                $recipeId = (int) ($item['id'] ?? 0);
+                $detailUrl = 'recipe.php?id=' . $recipeId;
+                ?>
+          <div class="card recipe-card">
+            <div class="row g-3 align-items-center">
+              <div class="col-md-3">
+                <img
+                  src="<?php echo h($imgSrc); ?>"
+                  alt="<?php echo h($title); ?>"
+                  class="recipe-thumb"
+                />
+              </div>
+              <div class="col-md-6">
+                <h5 class="recipe-card-title"><?php echo h($title); ?></h5>
+                <p class="recipe-card-text">
+                  <?php echo h($description); ?>
+                </p>
+              </div>
+              <div class="col-md-3 text-md-end">
+                <a href="<?php echo h($detailUrl); ?>" class="btn recipe-details-btn">
+                  Подробнее
                 </a>
               </div>
             </div>
           </div>
-        </section>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </div>
       </main>
 
       <!-- Футер -->
@@ -99,7 +161,6 @@
               </p>
             </div>
             <div class="col-md-4 mb-4 mb-md-0 text-center">
-              <!-- Место для QR‑кода -->
               <img src="images/qr_code.png" alt="QR-код" class="qr-img" />
             </div>
             <div class="col-md-4 footer-copy">
@@ -121,4 +182,3 @@
     <script src="js/script.js"></script>
   </body>
 </html>
-

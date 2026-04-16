@@ -10,7 +10,7 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body>
@@ -21,7 +21,7 @@
           <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
               <img
-                src="logo.png"
+                src="images/logo.png"
                 alt="Логотип"
                 class="navbar-brand-logo-img"
               />
@@ -44,14 +44,16 @@
                   <a class="nav-link" href="index.html">Главная</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="list.html">Рецепты</a>
+                  <a class="nav-link" href="list.php">Рецепты</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="form.html">Контакты</a>
                 </li>
               </ul>
               <div class="d-none d-lg-block">
-                <img src="search.png" alt="Поиск" class="nav-search-img" />
+                <a class="nav-search-link" href="list.php#recipeSearch" title="Поиск рецептов" aria-label="Поиск по рецептам">
+                  <img src="images/search.png" alt="" width="22" height="22" class="nav-search-img" />
+                </a>
               </div>
             </div>
           </div>
@@ -64,11 +66,7 @@
           <div class="row justify-content-center">
             <div class="col-lg-10">
               <div class="recipe-form-card">
-                <form
-                  action="recipe.html"
-                  method="get"
-                  enctype="multipart/form-data"
-                >
+                <form id="recipeForm" enctype="multipart/form-data">
                   <div class="mb-3">
                     <label
                       for="recipeTitle"
@@ -81,6 +79,8 @@
                       class="form-control recipe-form-input"
                       id="recipeTitle"
                       name="title"
+                      required
+                      maxlength="255"
                       placeholder="Введите название рецепта"
                     />
                   </div>
@@ -88,18 +88,87 @@
                   <div class="row mb-3">
                     <div class="col-md-6 mb-3 mb-md-0">
                       <label
-                        for="recipeCategory"
-                        class="recipe-form-label-sub d-block"
+                        for="recipeCategoryDisplay"
+                        class="recipe-form-label-sub d-block mb-1"
                       >
                         Категория
                       </label>
-                      <input
-                        type="text"
-                        class="form-control recipe-form-input"
-                        id="recipeCategory"
-                        name="category"
-                        placeholder="Например, десерт"
-                      />
+                      <div class="recipe-category-field position-relative">
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            readonly
+                            class="form-control recipe-form-input recipe-category-display"
+                            id="recipeCategoryDisplay"
+                            placeholder="Нажмите, чтобы выбрать"
+                            autocomplete="off"
+                            aria-haspopup="listbox"
+                            aria-expanded="false"
+                          />
+                          <button
+                            type="button"
+                            class="btn btn-outline-secondary recipe-category-toggle"
+                            id="recipeCategoryToggle"
+                            aria-label="Открыть список категорий"
+                            aria-expanded="false"
+                          >
+                            ▼
+                          </button>
+                        </div>
+                        <input type="hidden" name="category" id="recipeCategoryHidden" value="" />
+                        <div
+                          class="recipe-category-panel"
+                          id="recipeCategoryPanel"
+                          role="listbox"
+                          aria-hidden="true"
+                        >
+                          <button
+                            type="button"
+                            class="recipe-category-option"
+                            role="option"
+                            data-value="Первое блюдо"
+                          >
+                            Первое блюдо
+                          </button>
+                          <button
+                            type="button"
+                            class="recipe-category-option"
+                            role="option"
+                            data-value="Второе блюдо"
+                          >
+                            Второе блюдо
+                          </button>
+                          <button
+                            type="button"
+                            class="recipe-category-option"
+                            role="option"
+                            data-value="Десерт"
+                          >
+                            Десерт
+                          </button>
+                          <button
+                            type="button"
+                            class="recipe-category-option"
+                            role="option"
+                            data-value="__other__"
+                          >
+                            Другое
+                          </button>
+                          <div class="recipe-category-other-wrap d-none mt-2" id="recipeCategoryOtherWrap">
+                            <label for="recipeCategoryOther" class="form-label small mb-1"
+                              >Своя категория</label
+                            >
+                            <input
+                              type="text"
+                              class="form-control form-control-sm"
+                              id="recipeCategoryOther"
+                              placeholder="Введите с клавиатуры"
+                              maxlength="120"
+                              autocomplete="off"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div class="col-md-6">
                       <label
@@ -129,6 +198,7 @@
                       class="form-control recipe-form-textarea"
                       id="recipeText"
                       name="text"
+                      required
                       placeholder="Опишите ингредиенты и шаги приготовления"
                     ></textarea>
                   </div>
@@ -169,7 +239,7 @@
               </p>
             </div>
             <div class="col-md-4 mb-4 mb-md-0 text-center">
-              <img src="qr_code.png" alt="QR-код" class="qr-img" />
+              <img src="images/qr_code.png" alt="QR-код" class="qr-img" />
             </div>
             <div class="col-md-4 footer-copy">
               <p class="mb-0">
@@ -182,11 +252,26 @@
       </footer>
     </div>
 
+    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="formModalLabel">Сообщение</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body" id="formModalBody">Текст сообщения</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
   </body>
 </html>

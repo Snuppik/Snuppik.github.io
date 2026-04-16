@@ -10,7 +10,7 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body>
@@ -21,7 +21,7 @@
           <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
               <img
-                src="logo.png"
+                src="images/logo.png"
                 alt="Логотип"
                 class="navbar-brand-logo-img"
               />
@@ -44,7 +44,7 @@
                   <a class="nav-link" href="index.html">Главная</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="list.html">Рецепты</a>
+                  <a class="nav-link" href="list.php">Рецепты</a>
                 </li>
                 <li class="nav-item">
                   <a
@@ -56,7 +56,9 @@
                 </li>
               </ul>
               <div class="d-none d-lg-block">
-                <img src="search.png" alt="Поиск" class="nav-search-img" />
+                <a class="nav-search-link" href="list.php#recipeSearch" title="Поиск рецептов" aria-label="Поиск по рецептам">
+                  <img src="images/search.png" alt="" width="22" height="22" class="nav-search-img" />
+                </a>
               </div>
             </div>
           </div>
@@ -80,6 +82,9 @@
                       type="text"
                       class="form-control"
                       id="name"
+                      name="name"
+                      required
+                      maxlength="200"
                       placeholder="Ваше имя"
                     />
                   </div>
@@ -90,14 +95,16 @@
                       type="email"
                       class="form-control"
                       id="email"
+                      name="email"
+                      required
                       placeholder="name@example.com"
                     />
                   </div>
 
                   <div class="mb-3">
                     <label for="topic" class="form-label">Тема обращения</label>
-                    <select class="form-select" id="topic">
-                      <option selected>Выберите тему</option>
+                    <select class="form-select" id="topic" name="topic" required>
+                      <option value="" selected disabled>Выберите тему</option>
                       <option value="1">Предложить рецепт</option>
                       <option value="2">Сообщить об ошибке</option>
                       <option value="3">Другой вопрос</option>
@@ -109,6 +116,8 @@
                     <textarea
                       class="form-control"
                       id="message"
+                      name="message"
+                      required
                       rows="4"
                       placeholder="Ваше сообщение..."
                     ></textarea>
@@ -139,7 +148,7 @@
               </p>
             </div>
             <div class="col-md-4 mb-4 mb-md-0 text-center">
-              <img src="qr_code.png" alt="QR-код" class="qr-img" />
+              <img src="images/qr_code.png" alt="QR-код" class="qr-img" />
             </div>
             <div class="col-md-4 footer-copy">
               <p class="mb-0">
@@ -176,7 +185,7 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
   </body>
 </html>
 
